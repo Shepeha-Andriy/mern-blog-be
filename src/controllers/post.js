@@ -6,19 +6,15 @@ import { fileURLToPath } from 'url'
 
 export const createPost = async (req, res) => {
   try {
-    const { title, text } = req.body
+    const { title, text, image } = req.body
     const user = await User.findById(req.userId)
-    
-    if (req.files) {
-      let fileName = Date.now().toString() + req.files.image.name
-      const __dirname = dirname(fileURLToPath(import.meta.url))
-      req.files.image.mv(path.join(__dirname, '../..', 'uploads', fileName))
-      
+    console.log(image)
+    if (image) {
       const newPostWidthImage = new Post({
         username: user.username,
         title,
         text,
-        imgUrl: fileName,
+        imgUrl: image,
         author: req.userId
       })
 
@@ -112,15 +108,12 @@ export const removePost = async (req, res) => {
 
 export const updatePost = async (req, res) => {
   try {
-    const { title, text, id } = req.body
+    const { title, text, image, id } = req.body
     const post = await Post.findById(id)
 
-    if (req.files) {
-      let fileName = Date.now().toString() + req.files.image.name
-      const __dirname = dirname(fileURLToPath(import.meta.url))
-      req.files.image.mv(path.join(__dirname, '../..', 'uploads', fileName))
+    if (image) {
 
-      post.imgUrl = fileName || ''
+      post.imgUrl = image
     }
 
     post.title = title
